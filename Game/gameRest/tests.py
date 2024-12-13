@@ -17,7 +17,7 @@ class GameAPITests(APITestCase):
         url = reverse('get_cards')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)  # Проверяем, что возвращаются две карточки
+        self.assertEqual(len(response.data), 2) 
 
     def test_choose_winner(self):
         url = reverse('choose_winner')
@@ -28,10 +28,9 @@ class GameAPITests(APITestCase):
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['winner'], self.card2.id)  # Card 2 должен победить
+        self.assertEqual(response.data['winner'], self.card2.id)
 
     def test_game_history(self):
-        # Сначала создаем игру
         GameHistory.objects.create(
             user=self.user,
             card1=self.card1,
@@ -43,5 +42,5 @@ class GameAPITests(APITestCase):
         url = reverse('game_history')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)  # Проверяем, что возвращается одна игра
+        self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['winner']['id'], self.card2.id)
