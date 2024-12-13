@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startGameButton.addEventListener('click', async () => {
         try {
-            const response = await fetchWithJWT('/get-cards/', {
+            const response = await fetchWithJWT('/api/get-cards/', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const card2 = cards[1].id;
 
         try {
-            const response = await fetchWithJWT('/choose-winner/', {
+            const response = await fetchWithJWT('/api/choose-winner/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 const result = await response.json();
-                alert(`Выйграл: ${result.winner_name}`);
+                alert(`Выйграл: ${result.winner.name}`);
                 clearCards();
                 clearHistory();
             } else {
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     getHistoryButton.addEventListener('click', async () => {
         try {
-            const response = await fetchWithJWT('/game-history/', {
+            const response = await fetchWithJWT('/api/game-history/', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

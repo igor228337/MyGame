@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from .models import Card, GameHistory
 from .serializers import CardSerializer, GameHistorySerializer
@@ -10,10 +10,11 @@ from faker import Faker
 
 logger = logging.getLogger(__name__)
 
-class GetRandomCardsView(APIView):
+class GetRandomCardsViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
+        # Генерируем новые карты и возвращаем две случайные
         all_cards = self.generate_new_cards()
         card1, card2 = random.sample(all_cards, 2)
 
@@ -40,13 +41,14 @@ class GetRandomCardsView(APIView):
                     )
                     new_cards.append(card)
                     break
-                
         return new_cards
 
-class ChooseWinnerView(APIView):
+
+class ChooseWinnerViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
+        # Обрабатываем POST-запрос для выбора победителя
         user = request.user
         card1_id = request.data.get('card1')
         card2_id = request.data.get('card2')
@@ -59,15 +61,9 @@ class ChooseWinnerView(APIView):
         except Card.DoesNotExist:
             return Response({"error": "Карты не найдены"}, status=status.HTTP_404_NOT_FOUND)
 
-        winner = None
-        if card1.strength > card2.strength:
-            winner = card1
-        elif card2.strength > card1.strength:
-            winner = card2
-        else:
-            winner = random.choice([card1, card2])
+        winner = self.determine_winner(card1, card2)
 
-        GameHistory.objects.create(
+        history = GameHistory.objects.create(
             user=user,
             card1=card1,
             card2=card2,
@@ -75,12 +71,23 @@ class ChooseWinnerView(APIView):
             user_choice=user_choice,
         )
 
-        return Response({"winner": winner.id, "user_choice": user_choice.id, "winner_name": winner.name})
+        serializer = GameHistorySerializer(history)
+        return Response(serializer.data)
 
-class GameHistoryView(APIView):
+    def determine_winner(self, card1, card2):
+        if card1.strength > card2.strength:
+            return card1
+        elif card2.strength > card1.strength:
+            return card2
+        else:
+            return random.choice([card1, card2])
+
+
+class GameHistoryViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
+        # Возвращаем историю игр для текущего пользователя
         user = request.user
         history = GameHistory.objects.filter(user=user).order_by('-created_at')
         serializer = GameHistorySerializer(history, many=True)

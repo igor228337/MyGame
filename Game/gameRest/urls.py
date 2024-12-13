@@ -1,11 +1,16 @@
-from django.urls import path
+from django.urls import path, include
 from django.views.generic import TemplateView
-from .views import GetRandomCardsView, ChooseWinnerView, GameHistoryView
+from rest_framework.routers import DefaultRouter
+from .views import GetRandomCardsViewSet, ChooseWinnerViewSet, GameHistoryViewSet
+
+
+router = DefaultRouter()
+router.register(r'get-cards', GetRandomCardsViewSet, basename='get_cards')
+router.register(r'choose-winner', ChooseWinnerViewSet, basename='choose_winner')
+router.register(r'game-history', GameHistoryViewSet, basename='game_history')
 
 urlpatterns = [
     path('game/', TemplateView.as_view(template_name='game.html'), name='game'),
     path('login/', TemplateView.as_view(template_name='login.html'), name='login'),
-    path('get-cards/', GetRandomCardsView.as_view(), name='get_cards'),
-    path('choose-winner/', ChooseWinnerView.as_view(), name='choose_winner'),
-    path('game-history/', GameHistoryView.as_view(), name='game_history'),
+    path('api/', include(router.urls)),
 ]
