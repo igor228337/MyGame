@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карточная игра</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Карточная игра</h1>
+
+        <div class="text-center mb-4">
+            <button id="start-game" class="btn btn-primary me-2">Начать новую игру</button>
+            <button id="get-history" class="btn btn-secondary">Посмотреть историю</button>
+        </div>
+
+        <div id="cards" class="row justify-content-center">
+            
+        </div>
+
+        <div id="history" class="mt-4">
+            <h2>История игры</h2>
+            <pre id="history-data"></pre>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/game.js' %}"></script>
+</body>
+</html>
