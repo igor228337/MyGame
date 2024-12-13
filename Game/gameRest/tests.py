@@ -6,10 +6,8 @@ from .models import Card, GameHistory
 
 class GameAPITests(APITestCase):
     def setUp(self):
-        # Создаем тестового пользователя
         self.user = User.objects.create_user(username='testuser', password='testpass')
         self.client.force_authenticate(user=self.user)
-        # Создаем тестовые карточки
         self.card1 = Card.objects.create(name="Card 1", strength=5, agility=5, intelligence=5, luck=5)
         self.card2 = Card.objects.create(name="Card 2", strength=6, agility=6, intelligence=6, luck=6)
 
