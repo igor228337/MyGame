@@ -14,7 +14,6 @@ class GetRandomCardsViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
-        # Генерируем новые карты и возвращаем две случайные
         all_cards = self.generate_new_cards()
         card1, card2 = random.sample(all_cards, 2)
 
@@ -48,7 +47,6 @@ class ChooseWinnerViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        # Обрабатываем POST-запрос для выбора победителя
         user = request.user
         card1_id = request.data.get('card1')
         card2_id = request.data.get('card2')
@@ -87,7 +85,6 @@ class GameHistoryViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
-        # Возвращаем историю игр для текущего пользователя
         user = request.user
         history = GameHistory.objects.filter(user=user).order_by('-created_at')
         serializer = GameHistorySerializer(history, many=True)
