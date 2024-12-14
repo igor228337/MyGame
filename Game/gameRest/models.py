@@ -1,6 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
+class Race(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField(blank=True, null=True)
+    strength_multiplier = models.FloatField(default=1.0)
+    agility_multiplier = models.FloatField(default=1.0)
+    intelligence_multiplier = models.FloatField(default=1.0)
+    luck_multiplier = models.FloatField(default=1.0)
+    health_multiplier = models.FloatField(default=1.0)
+
+    def __str__(self):
+        return self.name
+
 class Card(models.Model):
     name = models.CharField(max_length=100)
     health = models.BigIntegerField(default=100)
@@ -8,6 +21,7 @@ class Card(models.Model):
     agility = models.IntegerField()
     intelligence = models.IntegerField()
     luck = models.IntegerField()
+    race = models.ForeignKey(Race, on_delete=models.CASCADE, related_name='cards')
 
     def __str__(self):
         return self.name

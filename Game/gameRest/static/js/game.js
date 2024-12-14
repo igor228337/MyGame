@@ -105,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Интеллект: ${card.intelligence}</p>
                 <p>Удача: ${card.luck}</p>
                 <p>Жизни: ${card.health}</p>
+                <p>Раса: ${card.race.name}</p>
                 <button class="btn btn-success choose-card" data-card-id="${card.id}">Выбрать</button>
             `;
             cardsContainer.appendChild(cardElement);

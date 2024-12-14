@@ -1,10 +1,17 @@
 from rest_framework import serializers
-from .models import Card, GameHistory
+from .models import Card, GameHistory, Race
+
+
+class RaceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Race
+        fields = ['id', 'name', 'description']
 
 class CardSerializer(serializers.ModelSerializer):
+    race = RaceSerializer()
     class Meta:
         model = Card
-        fields = ['id', 'name', 'strength', 'agility', 'intelligence', 'luck', 'health']
+        fields = ['id', 'name', 'strength', 'agility', 'intelligence', 'luck', 'health', 'race']
 
 class GameHistorySerializer(serializers.ModelSerializer):
     card1 = CardSerializer()

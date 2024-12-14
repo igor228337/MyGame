@@ -1,11 +1,16 @@
 from django.contrib import admin
-from .models import Card, GameHistory
+from .models import Card, GameHistory, Race
 
 
 @admin.register(Card)
 class CardAdmin(admin.ModelAdmin):
     list_display = ('name', 'strength', 'agility', 'intelligence', 'luck')
     list_filter = ('strength', 'agility', 'intelligence', 'luck')
+    search_fields = ('name',)
+
+@admin.register(Race)
+class RaceAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
     search_fields = ('name',)
 
 @admin.register(GameHistory)

@@ -4,6 +4,7 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from .models import Card, GameHistory
 
+
 class GameAPITests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='testpass')

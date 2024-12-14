@@ -2,11 +2,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
-from .models import Card, GameHistory
+from .models import Card, GameHistory, Race
 from .serializers import CardSerializer, GameHistorySerializer
 import random
 import logging
 from faker import Faker
+
 
 logger = logging.getLogger(__name__)
 
@@ -24,28 +25,49 @@ class GetRandomCardsViewSet(viewsets.ViewSet):
         new_cards = []
         for _ in range(count):
             while True:
-                strength = random.randint(1, 10)
-                agility = random.randint(1, 10)
-                intelligence = random.randint(1, 10)
-                luck = random.randint(1, 10)
-                health = 100 + (strength * 1.1)
+                races = Race.objects.all()
+                if not races:
+                    raise ValueError("Нет доступных рас. Создайте расы в базе данных.")
+
+                race = random.choice(races)
+                base_strength = random.randint(1, 10)
+                base_agility = random.randint(1, 10)
+                base_intelligence = random.randint(1, 10)
+                base_luck = random.randint(1, 10)
+                base_health = 100 + base_strength
+
+                strength = base_strength * race.strength_multiplier
+                agility = base_agility * race.agility_multiplier
+                intelligence = base_intelligence * race.intelligence_multiplier
+                luck = base_luck * race.luck_multiplier
+                health = base_health * race.health_multiplier
                 fake = Faker().name()
-                
-                if not Card.objects.filter(strength=strength, agility=agility, intelligence=intelligence, luck=luck, health=health).exists():
+
+                existing_card = Card.objects.filter(
+                    strength=strength,
+                    agility=agility,
+                    intelligence=intelligence,
+                    luck=luck,
+                    health=health,
+                    race=race
+                ).first()
+
+                if not existing_card:
                     card = Card.objects.create(
                         name=fake,
                         strength=strength,
                         agility=agility,
                         intelligence=intelligence,
                         luck=luck,
-                        health=health
+                        health=health,
+                        race=race
                     )
                     new_cards.append(card)
                     break
                 else:
-                    existing_card = Card.objects.filter(strength=strength, agility=agility, intelligence=intelligence, luck=luck, health=health).first()
                     new_cards.append(existing_card)
                     break
+
         return new_cards
 
 
@@ -91,11 +113,10 @@ class ChooseWinnerViewSet(viewsets.ViewSet):
 
     def calculate_total_power(self, card):
         return (
-            (card.strength * 1.7) +
-            (card.agility * 1.6) +
-            (card.intelligence * 1.4) +
-            (card.luck * 1.1) +
-            (card.health)
+            (card.strength) +
+            (card.agility) +
+            (card.intelligence) +
+            (card.luck)
         )
 
 
