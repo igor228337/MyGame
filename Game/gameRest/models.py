@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 class Card(models.Model):
     name = models.CharField(max_length=100)
+    health = models.BigIntegerField(default=100)
     strength = models.IntegerField()
     agility = models.IntegerField()
     intelligence = models.IntegerField()

@@ -4,7 +4,7 @@ from .models import Card, GameHistory
 class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
-        fields = ['id', 'name', 'strength', 'agility', 'intelligence', 'luck']
+        fields = ['id', 'name', 'strength', 'agility', 'intelligence', 'luck', 'health']
 
 class GameHistorySerializer(serializers.ModelSerializer):
     card1 = CardSerializer()
